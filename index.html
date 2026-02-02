@@ -2,75 +2,291 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
-    <title>نظام هيكل الموظفين - نسخة تجريبية</title>
+    <title>Employee Connect - نسخة تجريبية</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
+        * { box-sizing: border-box; }
         body {
-            font-family: sans-serif;
             margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f3f4f6;
+        }
+        a { color: inherit; }
+
+        /* ====== login view ====== */
+        #loginView {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .login-card {
+            background: #ffffff;
+            padding: 20px 18px;
+            border-radius: 10px;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+        .login-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+        .login-subtitle {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            color: #374151;
+        }
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 7px 9px;
+            font-size: 13px;
+        }
+        .hint {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 9px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            background: #1d4ed8;
+            color: #ffffff;
+            margin-top: 6px;
+        }
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
+        .login-badge {
+            display: inline-block;
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .alert {
+            background: #fef3c7;
+            color: #92400e;
+            border-radius: 6px;
+            padding: 6px 8px;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* ====== app layout ====== */
+        #appView {
+            display: none;
+            min-height: 100vh;
+        }
+        .app-shell {
             display: flex;
             min-height: 100vh;
         }
         .sidebar {
             width: 260px;
-            background: #1f2933;
-            color: #fff;
+            background: #111827;
+            color: #e5e7eb;
             padding: 16px;
-            box-sizing: border-box;
         }
         .sidebar h2 {
             margin-top: 0;
-            font-size: 18px;
+            font-size: 16px;
+            margin-bottom: 12px;
         }
         .sidebar label {
-            font-size: 13px;
+            font-size: 12px;
         }
         .sidebar select {
             width: 100%;
-            padding: 8px;
-            margin: 6px 0 14px 0;
-            box-sizing: border-box;
+            padding: 7px;
+            margin: 6px 0 10px 0;
+            font-size: 13px;
         }
+        .sidebar small {
+            font-size: 11px;
+            color: #9ca3af;
+            line-height: 1.5;
+        }
+
         .main {
             flex: 1;
-            padding: 16px;
-            box-sizing: border-box;
-            background: #f5f5f5;
+            padding: 12px 16px 20px;
         }
-        h1 {
-            margin-top: 0;
-            font-size: 20px;
-        }
-        .view-tabs {
+
+        /* top bar */
+        .topbar {
             display: flex;
             flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
             gap: 8px;
             margin-bottom: 10px;
         }
-        .view-tabs .tab {
+        .topbar-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .app-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .app-subtitle {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        .topbar-right {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .user-pill {
+            font-size: 12px;
+            background: #e5e7eb;
+            padding: 4px 9px;
+            border-radius: 999px;
+        }
+        .role-tag {
+            font-size: 11px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 2px 7px;
+            border-radius: 999px;
+            margin-right: 4px;
+        }
+        .logout-btn {
+            border: none;
             padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #f97316;
+            color: #ffffff;
+        }
+
+        .company-switcher {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .company-switcher select {
+            padding: 5px 8px;
+            font-size: 12px;
+        }
+
+        .notice {
+            background: #eff6ff;
+            border-radius: 6px;
+            padding: 6px 8px;
+            font-size: 12px;
+            color: #1d4ed8;
+            margin-bottom: 8px;
+        }
+
+        /* admin panels */
+        .admin-panels {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .panel {
+            background: #ffffff;
+            border-radius: 6px;
+            padding: 8px 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .panel h3 {
             font-size: 13px;
+            margin: 0 0 6px 0;
+        }
+        .panel-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        .panel-group {
+            flex: 1 1 140px;
+            display: flex;
+            flex-direction: column;
+            font-size: 11px;
+        }
+        .panel-group label {
+            margin-bottom: 2px;
+            color: #374151;
+        }
+        .panel-group input,
+        .panel-group select,
+        .panel-group textarea {
+            font-size: 12px;
+            padding: 5px 7px;
+        }
+        .panel button {
+            padding: 6px 10px;
+            font-size: 12px;
             border-radius: 4px;
-            border: 1px solid #ddd;
+            border: none;
+            cursor: pointer;
+            background: #10b981;
+            color: #ffffff;
+        }
+        .panel button.secondary {
+            background: #3b82f6;
+        }
+
+        /* tabs & toolbar */
+        .view-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .view-tabs .tab {
+            padding: 5px 9px;
+            font-size: 12px;
+            border-radius: 4px;
+            border: 1px solid #d1d5db;
             background: #ffffff;
             cursor: pointer;
         }
         .view-tabs .tab.active {
-            background: #1a56db;
+            background: #1d4ed8;
             color: #ffffff;
-            border-color: #1a56db;
+            border-color: #1d4ed8;
         }
+
         .toolbar {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 12px;
-        }
-        .toolbar input[type="text"],
-        .toolbar select {
-            padding: 6px 8px;
-            font-size: 13px;
-            box-sizing: border-box;
+            margin-bottom: 8px;
         }
         .toolbar-item {
             display: flex;
@@ -78,39 +294,67 @@
             font-size: 11px;
         }
         .toolbar-item label {
-            margin-bottom: 3px;
-            color: #555;
+            margin-bottom: 2px;
+            color: #374151;
         }
-        .card {
-            background: #fff;
-            padding: 12px;
-            border-radius: 6px;
+        .toolbar-item input,
+        .toolbar-item select {
+            padding: 5px 7px;
+            font-size: 12px;
+        }
+
+        /* stats + list */
+        #statsBar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
             margin-bottom: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            font-size: 12px;
+        }
+        .stat-chip {
+            background: #ffffff;
+            padding: 6px 8px;
+            border-radius: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 6px;
+            padding: 10px 10px 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .card-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
             gap: 8px;
+            margin-bottom: 6px;
         }
         .name {
-            font-weight: bold;
-            font-size: 16px;
+            font-size: 15px;
+            font-weight: 600;
         }
         .job-title {
-            font-size: 13px;
-            color: #555;
+            font-size: 12px;
+            color: #6b7280;
         }
         .meta {
-            font-size: 12px;
-            color: #777;
-            margin-top: 4px;
+            font-size: 11px;
+            color: #4b5563;
         }
+        .tag {
+            display: inline-block;
+            background: #e5e7eb;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin: 2px 2px 2px 0;
+        }
+
         .status-pill {
             display: inline-block;
-            padding: 3px 8px;
+            padding: 3px 7px;
             border-radius: 999px;
             font-size: 11px;
             margin-bottom: 4px;
@@ -131,40 +375,24 @@
         }
         .status-REMOTE {
             background: #e0ecff;
-            color: #1a56db;
+            color: #1d4ed8;
         }
         .status-select {
-            font-size: 12px;
-            padding: 3px 4px;
-        }
-        .tag {
-            display: inline-block;
-            background: #e5e7eb;
-            padding: 2px 6px;
-            border-radius: 4px;
             font-size: 11px;
-            margin-left: 4px;
-            margin-top: 2px;
+            padding: 2px 3px;
         }
-        .tasks {
-            margin-top: 6px;
-            font-size: 12px;
+
+        .tasks, .skills {
+            font-size: 11px;
+            margin-top: 5px;
         }
-        .tasks-title {
-            font-weight: bold;
-            margin-bottom: 4px;
+        .tasks-title,
+        .skills-title {
+            font-weight: 600;
+            margin-bottom: 3px;
         }
         .task-item {
             list-style: none;
-            margin: 2px 0;
-        }
-        .skills {
-            margin-top: 6px;
-            font-size: 12px;
-        }
-        .skills-title {
-            font-weight: bold;
-            margin-bottom: 4px;
         }
         .skill-tag {
             display: inline-block;
@@ -173,796 +401,929 @@
             padding: 2px 6px;
             border-radius: 999px;
             font-size: 11px;
-            margin: 2px 3px 0 0;
+            margin: 2px 3px 2px 0;
         }
-        .profile-btn,
-        .edit-btn {
-            margin-top: 8px;
-            padding: 6px 10px;
-            font-size: 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .profile-btn {
-            border: 1px solid #1a56db;
-            background: #ffffff;
-            margin-left: 6px;
-        }
-        .profile-btn:hover {
-            background: #e0ecff;
-        }
-        .edit-btn {
-            border: 1px solid #f97316;
-            background: #fff7ed;
-        }
-        .edit-btn:hover {
-            background: #ffedd5;
-        }
+
         .no-employees {
             text-align: center;
-            color: #777;
-            margin-top: 40px;
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 30px;
         }
 
-        .add-employee,
-        .manage-structure {
-            background: #ffffff;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 14px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-        }
-        .toggle-btn {
-            padding: 6px 10px;
-            font-size: 13px;
-            border-radius: 4px;
-            border: 1px solid #10b981;
-            background: #ecfdf5;
-            cursor: pointer;
-        }
-        .add-form {
-            margin-top: 10px;
-            display: none;
-        }
-        .add-form-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-        .add-form-group {
-            flex: 1 1 160px;
-            display: flex;
-            flex-direction: column;
-            font-size: 11px;
-        }
-        .add-form-group label {
-            margin-bottom: 3px;
-            color: #555;
-        }
-        .add-form-group input,
-        .add-form-group select,
-        .add-form-group textarea {
-            padding: 6px 8px;
-            font-size: 12px;
-            box-sizing: border-box;
-        }
-        .add-form textarea {
-            resize: vertical;
-        }
-        .add-btn {
-            padding: 7px 12px;
-            font-size: 13px;
-            border-radius: 4px;
-            border: none;
-            background: #10b981;
-            color: #ffffff;
-            cursor: pointer;
-        }
-        .add-btn.secondary {
-            background: #3b82f6;
-        }
-
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.4);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-        }
-        .modal-content {
-            background: #ffffff;
-            padding: 16px;
-            border-radius: 8px;
-            max-width: 420px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            box-sizing: border-box;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space_between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .modal-title {
-            font-size: 16px;
-            font-weight: bold;
-        }
-        .modal-close {
-            border: none;
-            background: transparent;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .modal-section {
-            margin-top: 8px;
-            font-size: 13px;
-        }
-        .modal-section h4 {
-            margin: 8px 0 4px 0;
-            font-size: 13px;
-        }
-
-        @media (max-width: 800px) {
-            body {
+        @media (max-width: 900px) {
+            .app-shell {
                 flex-direction: column;
             }
             .sidebar {
                 width: 100%;
             }
         }
+        @media (max-width: 600px) {
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .topbar-right {
+                justify-content: flex-start;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>الفروع والأقسام</h2>
-        <label>اختر الفرع:</label>
-        <select id="branchSelect"></select>
+    <!-- ===== LOGIN VIEW ===== -->
+    <div id="loginView">
+        <div class="login-card">
+            <div class="login-title">Employee Connect</div>
+            <div class="login-subtitle">نسخة تجريبية لربط الموظفين داخل الشركات</div>
 
-        <label>اختر القسم:</label>
-        <select id="departmentSelect"></select>
+            <div class="login-badge">Project by Fayez (Owner)</div>
 
-        <hr />
-        <div style="font-size: 12px; line-height: 1.6;">
-            <b>ملاحظة:</b><br>
-            هذي نسخة تجريبية محلية للتجربة والتصميم.<br>
-            الفروع والأقسام والموظفون والحالات محفوظة في المتصفح (localStorage).
-        </div>
-    </div>
-
-    <div class="main">
-        <h1 id="pageTitle">الموظفون</h1>
-
-        <div class="view-tabs">
-            <button id="viewByDeptBtn" class="tab active">عرض حسب الفرع والقسم</button>
-            <button id="viewOnDutyBtn" class="tab">من مداوم الآن</button>
-        </div>
-
-        <div class="toolbar">
-            <div class="toolbar-item" style="flex: 1 1 200px;">
-                <label for="searchInput">بحث (اسم / رقم موظف / مسمى):</label>
-                <input id="searchInput" type="text" placeholder="اكتب جزء من الاسم أو الرقم الوظيفي..." />
-            </div>
-
-            <div class="toolbar-item" style="flex: 0 0 200px;">
-                <label for="statusFilter">فلترة حسب الحالة (في عرض الفرع فقط):</label>
-                <select id="statusFilter">
-                    <option value="ALL">كل الحالات</option>
-                    <option value="ON_DUTY">مداوم الآن</option>
-                    <option value="VACATION">إجازة</option>
-                    <option value="OUT">خارج المكتب</option>
-                    <option value="REMOTE">عمل عن بُعد</option>
+            <div class="form-group">
+                <label for="loginRole">الدور / نوع الدخول</label>
+                <select id="loginRole">
+                    <option value="EMPLOYEE">موظف (Employee)</option>
+                    <option value="DEPT_MANAGER">مدير قسم (Department Manager)</option>
+                    <option value="COMPANY_ADMIN">أدمن شركة (Company Admin)</option>
+                    <option value="SUPER">Super Admin (مالك النظام)</option>
                 </select>
-            </div>
-
-            <div class="toolbar-item" style="flex: 0 0 220px;">
-                <label for="skillFilter">أحتاج مساعدة في (حسب المهارة):</label>
-                <select id="skillFilter">
-                    <option value="ALL">كل المهارات</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="add-employee">
-            <button id="toggleAddFormBtn" class="toggle-btn">إضافة موظف جديد</button>
-            <div id="addEmployeeForm" class="add-form">
-                <div class="add-form-row">
-                    <div class="add-form-group">
-                        <label for="addName">الاسم الكامل *</label>
-                        <input id="addName" type="text" />
-                    </div>
-                    <div class="add-form-group">
-                        <label for="addCode">الرقم الوظيفي</label>
-                        <input id="addCode" type="text" />
-                    </div>
-                    <div class="add-form-group">
-                        <label for="addJobTitle">المسمى الوظيفي *</label>
-                        <input id="addJobTitle" type="text" />
-                    </div>
-                </div>
-                <div class="add-form-row">
-                    <div class="add-form-group">
-                        <label for="addBranchSelect">الفرع *</label>
-                        <select id="addBranchSelect"></select>
-                    </div>
-                    <div class="add-form-group">
-                        <label for="addDepartmentSelect">القسم *</label>
-                        <select id="addDepartmentSelect"></select>
-                    </div>
-                </div>
-                <div class="add-form-row">
-                    <div class="add-form-group">
-                        <label for="addEmail">البريد الإلكتروني</label>
-                        <input id="addEmail" type="email" />
-                    </div>
-                    <div class="add-form-group">
-                        <label for="addPhone">الجوال</label>
-                        <input id="addPhone" type="text" />
-                    </div>
-                </div>
-                <div class="add-form-row">
-                    <div class="add-form-group" style="flex:1 1 100%;">
-                        <label for="addSkills">المهارات (كل مهارة في سطر)</label>
-                        <textarea id="addSkills" rows="2" placeholder="مثال: بريد إلكتروني&#10;شبكات&#10;طابعات"></textarea>
-                    </div>
-                </div>
-                <div class="add-form-row">
-                    <div class="add-form-group" style="flex:1 1 100%;">
-                        <label for="addTasks">المهام (كل مهمة في سطر)</label>
-                        <textarea id="addTasks" rows="3"></textarea>
-                    </div>
-                </div>
-                <button id="addEmployeeBtn" class="add-btn">حفظ الموظف</button>
-            </div>
-        </div>
-
-        <div class="manage-structure">
-            <h3 style="font-size:14px;margin:0 0 8px 0;">إدارة الفروع والأقسام</h3>
-
-            <div class="add-form-row">
-                <div class="add-form-group">
-                    <label for="addBranchName">إضافة فرع جديد</label>
-                    <input id="addBranchName" type="text" placeholder="مثال: الرياض - المقر الرئيسي CSC-SA" />
-                </div>
-                <div class="add-form-group" style="flex:0 0 140px;align-self:flex-end;">
-                    <button id="addBranchBtn" class="add-btn secondary">حفظ الفرع</button>
+                <div class="hint">
+                    Super Admin: أنت كصاحب النظام، تضيف الشركات وتختبر كل شيء.
                 </div>
             </div>
 
-            <div class="add-form-row">
-                <div class="add-form-group">
-                    <label for="addDeptBranchSelect">الفرع (للقسم الجديد)</label>
-                    <select id="addDeptBranchSelect"></select>
+            <div class="form-group" id="loginCompanyGroup">
+                <label for="loginCompany">اختر الشركة</label>
+                <select id="loginCompany"></select>
+                <div class="hint">
+                    إذا لم تجد شركتك، خلك Super Admin وأضفها من داخل النظام.
                 </div>
-                <div class="add-form-group">
-                    <label for="addDeptName">اسم القسم الجديد</label>
-                    <input id="addDeptName" type="text" placeholder="مثال: تقنية المعلومات، الموارد البشرية..." />
-                </div>
-                <div class="add-form-group" style="flex:0 0 140px;align-self:flex-end;">
-                    <button id="addDeptBtn" class="add-btn secondary">حفظ القسم</button>
+                <div id="loginCompanyAlert" class="alert" style="display:none;">
+                    لا توجد شركات حاليًا. سجّل دخول كـ Super Admin ثم أضف شركة جديدة.
                 </div>
             </div>
-        </div>
 
-        <!-- Dashboard الإحصائيات -->
-        <div id="statsBar" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;font-size:12px;">
-            <!-- يتم تعبئته بالجافاسكربت -->
-        </div>
+            <div class="form-group">
+                <label for="loginName">اسمك الذي سيظهر في النظام</label>
+                <input id="loginName" type="text" placeholder="مثال: فايز العنزي" />
+            </div>
 
-        <div id="employeesContainer"></div>
-        <div id="noEmployees" class="no-employees" style="display:none;">
-            لا يوجد موظفون حسب الفلاتر الحالية.
+            <button id="loginBtn" class="login-btn">دخول للنظام</button>
         </div>
     </div>
 
-    <!-- نافذة الملف الشخصي -->
-    <div id="employeeModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title" id="modalName">اسم الموظف</div>
-                <button class="modal-close" id="modalCloseBtn">&times;</button>
-            </div>
-            <div class="modal-section">
-                <div id="modalJob"></div>
-                <div id="modalBranchDept" style="margin-top:4px; font-size:12px; color:#555;"></div>
-                <div style="margin-top:6px;">
-                    <span id="modalStatus" class="status-pill status-ON_DUTY">مداوم الآن</span>
-                </div>
-            </div>
-            <div class="modal-section">
-                <h4>بيانات التواصل</h4>
-                <div id="modalContact"></div>
-            </div>
-            <div class="modal-section">
-                <h4>المهارات / المجالات اللي يقدر يساعد فيها</h4>
-                <ul id="modalSkills"></ul>
-            </div>
-            <div class="modal-section">
-                <h4>المهام الحالية</h4>
-                <ul id="modalTasks"></ul>
-            </div>
-        </div>
-    </div>
+    <!-- ===== APP VIEW ===== -->
+    <div id="appView">
+        <div class="app-shell">
+            <div class="sidebar">
+                <h2>الفروع والأقسام</h2>
 
-    <!-- نافذة تعديل الموظف -->
-    <div id="editEmployeeModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">تعديل بيانات الموظف</div>
-                <button class="modal-close" id="editModalCloseBtn">&times;</button>
+                <label for="branchSelect">اختر الفرع:</label>
+                <select id="branchSelect"></select>
+
+                <label for="departmentSelect">اختر القسم:</label>
+                <select id="departmentSelect"></select>
+
+                <hr style="border-color:#4b5563;margin:10px 0;" />
+
+                <small>
+                    هذه نسخة تجريبية تعمل على متصفحك فقط (localStorage).<br>
+                    كل شركة منفصلة عن الثانية داخل النظام، والأدوار تتحكم في من يستطيع التعديل.
+                </small>
             </div>
-            <div class="modal-section">
-                <div class="add-form-row">
-                    <div class="add-form-group">
-                        <label for="editName">الاسم الكامل *</label>
-                        <input id="editName" type="text" />
+
+            <div class="main">
+                <!-- TOPBAR -->
+                <div class="topbar">
+                    <div class="topbar-left">
+                        <div class="app-title">لوحة الموظفين</div>
+                        <div class="app-subtitle" id="pageSubtitle">عرض الموظفين حسب الشركة / الفرع / القسم</div>
                     </div>
-                    <div class="add-form-group">
-                        <label for="editCode">الرقم الوظيفي</label>
-                        <input id="editCode" type="text" />
-                    </div>
-                </div>
-                <div class="add-form-row">
-                    <div class="add-form-group">
-                        <label for="editJobTitle">المسمى الوظيفي *</label>
-                        <input id="editJobTitle" type="text" />
-                    </div>
-                </div>
-                <div class="add-form-row">
-                    <div class="add-form-group">
-                        <label for="editBranchSelect">الفرع *</label>
-                        <select id="editBranchSelect"></select>
-                    </div>
-                    <div class="add-form-group">
-                        <label for="editDeptSelect">القسم *</label>
-                        <select id="editDeptSelect"></select>
+                    <div class="topbar-right">
+                        <div id="companySwitcherContainer" class="company-switcher" style="display:none;">
+                            <span style="color:#374151;">الشركة الحالية:</span>
+                            <select id="appCompanySelect"></select>
+                        </div>
+                        <div class="user-pill">
+                            <span id="roleTag" class="role-tag"></span>
+                            <span id="userNameLabel"></span>
+                        </div>
+                        <button id="logoutBtn" class="logout-btn">تسجيل خروج</button>
                     </div>
                 </div>
-                <div class="add-form-row">
-                    <div class="add-form-group">
-                        <label for="editEmail">البريد الإلكتروني</label>
-                        <input id="editEmail" type="email" />
+
+                <!-- INFO NOTICE -->
+                <div id="noCompanyNotice" class="notice" style="display:none;">
+                    لا توجد شركات مسجّلة بعد. بصفتك Super Admin، أضف أول شركة من لوحة "إدارة الشركات" بالأسفل.
+                </div>
+
+                <!-- ADMIN PANELS -->
+                <div id="adminPanels" class="admin-panels" style="display:none;">
+                    <!-- Super admin panel for companies -->
+                    <div id="superPanel" class="panel" style="display:none;">
+                        <h3>إدارة الشركات (Super Admin)</h3>
+                        <div class="panel-row">
+                            <div class="panel-group">
+                                <label for="newCompanyName">اسم الشركة</label>
+                                <input id="newCompanyName" type="text" placeholder="مثال: حلول الاتصالات المحدودة" />
+                            </div>
+                            <div class="panel-group">
+                                <label for="newCompanyCode">رمز / كود الشركة (اختياري)</label>
+                                <input id="newCompanyCode" type="text" placeholder="مثال: CSC-SA" />
+                            </div>
+                            <div class="panel-group" style="flex:0 0 130px;align-self:flex-end;">
+                                <button id="addCompanyBtn">إضافة شركة</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="add-form-group">
-                        <label for="editPhone">الجوال</label>
-                        <input id="editPhone" type="text" />
+
+                    <!-- Company admin panel -->
+                    <div id="companyAdminPanel" class="panel" style="display:none;">
+                        <h3>إدارة هيكل الشركة (أدمن الشركة / Super)</h3>
+
+                        <div class="panel-row">
+                            <div class="panel-group">
+                                <label for="addBranchName">إضافة فرع جديد</label>
+                                <input id="addBranchName" type="text" placeholder="مثال: الرياض - المقر الرئيسي" />
+                            </div>
+                            <div class="panel-group" style="flex:0 0 120px;align-self:flex-end;">
+                                <button id="addBranchBtn" class="secondary">حفظ الفرع</button>
+                            </div>
+                        </div>
+
+                        <div class="panel-row">
+                            <div class="panel-group">
+                                <label for="addDeptBranchSelect">الفرع للقسم الجديد</label>
+                                <select id="addDeptBranchSelect"></select>
+                            </div>
+                            <div class="panel-group">
+                                <label for="addDeptName">اسم القسم الجديد</label>
+                                <input id="addDeptName" type="text" placeholder="مثال: تقنية المعلومات" />
+                            </div>
+                            <div class="panel-group" style="flex:0 0 120px;align-self:flex-end;">
+                                <button id="addDeptBtn" class="secondary">حفظ القسم</button>
+                            </div>
+                        </div>
+
+                        <div class="panel-row">
+                            <div class="panel-group">
+                                <label for="addEmpName">اسم الموظف</label>
+                                <input id="addEmpName" type="text" placeholder="مثال: فايز العنزي" />
+                            </div>
+                            <div class="panel-group">
+                                <label for="addEmpCode">الرقم الوظيفي</label>
+                                <input id="addEmpCode" type="text" />
+                            </div>
+                            <div class="panel-group">
+                                <label for="addEmpJob">المسمى الوظيفي</label>
+                                <input id="addEmpJob" type="text" placeholder="مثال: IT Support" />
+                            </div>
+                        </div>
+
+                        <div class="panel-row">
+                            <div class="panel-group">
+                                <label for="addEmpBranchSelect">فرع الموظف</label>
+                                <select id="addEmpBranchSelect"></select>
+                            </div>
+                            <div class="panel-group">
+                                <label for="addEmpDeptSelect">قسم الموظف</label>
+                                <select id="addEmpDeptSelect"></select>
+                            </div>
+                            <div class="panel-group">
+                                <label for="addEmpEmail">البريد الإلكتروني</label>
+                                <input id="addEmpEmail" type="email" />
+                            </div>
+                            <div class="panel-group">
+                                <label for="addEmpPhone">الجوال</label>
+                                <input id="addEmpPhone" type="text" />
+                            </div>
+                        </div>
+
+                        <div class="panel-row">
+                            <div class="panel-group" style="flex:1 1 100%;">
+                                <label for="addEmpSkills">المهارات (كل مهارة في سطر)</label>
+                                <textarea id="addEmpSkills" rows="2" placeholder="مثال: بريد إلكتروني&#10;شبكات&#10;Microsoft 365"></textarea>
+                            </div>
+                        </div>
+                        <div class="panel-row">
+                            <div class="panel-group" style="flex:1 1 100%;">
+                                <label for="addEmpTasks">المهام (كل مهمة في سطر)</label>
+                                <textarea id="addEmpTasks" rows="3" placeholder="مثال: متابعة مشاكل الإيميل&#10;دعم فروع الشركة عن بعد"></textarea>
+                            </div>
+                        </div>
+
+                        <button id="addEmpBtn">إضافة الموظف</button>
                     </div>
                 </div>
-                <div class="add-form-row">
-                    <div class="add-form-group" style="flex:1 1 100%;">
-                        <label for="editSkills">المهارات (كل مهارة في سطر)</label>
-                        <textarea id="editSkills" rows="2"></textarea>
+
+                <!-- VIEW TABS + TOOLBAR -->
+                <div class="view-tabs">
+                    <button id="viewByDeptBtn" class="tab active">عرض حسب الفرع والقسم</button>
+                    <button id="viewOnDutyBtn" class="tab">من مداوم الآن</button>
+                </div>
+
+                <div class="toolbar">
+                    <div class="toolbar-item" style="flex:1 1 200px;">
+                        <label for="searchInput">بحث (اسم / رقم / مسمى)</label>
+                        <input id="searchInput" type="text" placeholder="اكتب جزء من الاسم أو الرقم الوظيفي..." />
+                    </div>
+                    <div class="toolbar-item" style="flex:0 0 170px;">
+                        <label for="statusFilter">فلترة حسب الحالة</label>
+                        <select id="statusFilter">
+                            <option value="ALL">كل الحالات</option>
+                            <option value="ON_DUTY">مداوم الآن</option>
+                            <option value="VACATION">إجازة</option>
+                            <option value="OUT">خارج المكتب</option>
+                            <option value="REMOTE">عمل عن بُعد</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-item" style="flex:0 0 200px;">
+                        <label for="skillFilter">أحتاج مساعدة في (حسب المهارة)</label>
+                        <select id="skillFilter">
+                            <option value="ALL">كل المهارات</option>
+                        </select>
                     </div>
                 </div>
-                <div class="add-form-row">
-                    <div class="add-form-group" style="flex:1 1 100%;">
-                        <label for="editTasks">المهام (كل مهمة في سطر)</label>
-                        <textarea id="editTasks" rows="3"></textarea>
-                    </div>
+
+                <!-- STATS -->
+                <div id="statsBar"></div>
+
+                <!-- EMPLOYEES LIST -->
+                <div id="employeesContainer"></div>
+                <div id="noEmployees" class="no-employees" style="display:none;">
+                    لا يوجد موظفون حسب الفلاتر الحالية.
                 </div>
-                <button id="saveEmployeeChangesBtn" class="add-btn">حفظ التعديلات</button>
             </div>
         </div>
     </div>
 
     <script>
-        const BRANCHES_KEY = "branches_data_v1";
-        const DEPARTMENTS_KEY = "departments_data_v1";
-        const EMPLOYEES_KEY = "employees_data_v1";
-        const STATUS_KEY = "employee_status_v1";
+        // ===== KEYS =====
+        const K_COMPANIES = "EC_COMPANIES_V1";
+        const K_BRANCHES  = "EC_BRANCHES_V1";
+        const K_DEPTS     = "EC_DEPTS_V1";
+        const K_EMPS      = "EC_EMPS_V1";
+        const K_STATUS    = "EC_STATUS_V1";
+        const K_SESSION   = "EC_SESSION_V1";
+
+        // ===== DEFAULT DATA (عينات) =====
+        const DEFAULT_COMPANIES = [
+            { id: 1, name: "شركة تجريبية ألف", code: "COMP-A" },
+            { id: 2, name: "شركة تجريبية باء", code: "COMP-B" }
+        ];
 
         const DEFAULT_BRANCHES = [
-            { id: 1, name: "الرياض - المقر الرئيسي" },
-            { id: 2, name: "جدة - فرع البحر الأحمر" },
-            { id: 3, name: "الخبر - فرع الشرقية" }
+            { id: 1, companyId: 1, name: "الرياض - المقر الرئيسي", city: "الرياض" },
+            { id: 2, companyId: 1, name: "جدة - فرع البحر الأحمر", city: "جدة" },
+            { id: 3, companyId: 2, name: "الدمام - فرع الشرقية", city: "الدمام" }
         ];
 
         const DEFAULT_DEPARTMENTS = [
-            { id: 1, name: "تقنية المعلومات", branch_id: 1 },
-            { id: 2, name: "الموارد البشرية", branch_id: 1 },
-            { id: 3, name: "الدعم الفني الميداني", branch_id: 2 },
-            { id: 4, name: "المبيعات", branch_id: 2 },
-            { id: 5, name: "خدمة العملاء", branch_id: 3 }
+            { id: 1, companyId: 1, branchId: 1, name: "تقنية المعلومات" },
+            { id: 2, companyId: 1, branchId: 1, name: "الموارد البشرية" },
+            { id: 3, companyId: 1, branchId: 2, name: "الدعم الفني الميداني" },
+            { id: 4, companyId: 1, branchId: 2, name: "المبيعات" },
+            { id: 5, companyId: 2, branchId: 3, name: "خدمة العملاء" }
         ];
 
         const DEFAULT_EMPLOYEES = [
             {
                 id: 1,
+                companyId: 1,
                 full_name: "فايز العنزي",
-                employee_code: "CSC-1001",
+                employee_code: "A-1001",
                 job_title: "IT Support / Network",
                 branch_id: 1,
                 department_id: 1,
                 email: "fayez@example.com",
                 phone: "0550000000",
                 skills: ["بريد إلكتروني", "شبكات", "Microsoft 365"],
-                tasks: [
-                    "متابعة مشاكل البريد الإلكتروني",
-                    "مراقبة أجهزة الفروع عن بعد"
-                ]
+                tasks: ["متابعة مشاكل البريد الإلكتروني", "دعم فروع الشركة عن بعد"]
             },
             {
                 id: 2,
-                full_name: "محمد القحطاني",
-                employee_code: "CSC-1010",
-                job_title: "System Administrator",
-                branch_id: 1,
-                department_id: 1,
-                email: "m.qahtani@example.com",
-                phone: "0551111111",
-                skills: ["سيرفرات", "نسخ احتياطي", "أنظمة ويندوز"],
-                tasks: [
-                    "إدارة السيرفرات",
-                    "النسخ الاحتياطي الأسبوعي"
-                ]
-            },
-            {
-                id: 3,
+                companyId: 1,
                 full_name: "رنا الشهري",
-                employee_code: "CSC-2001",
+                employee_code: "A-2001",
                 job_title: "HR Specialist",
                 branch_id: 1,
                 department_id: 2,
                 email: "rana@example.com",
-                phone: "0552222222",
-                skills: ["إجازات", "شؤون موظفين", "العقود"],
-                tasks: [
-                    "طلبات التوظيف",
-                    "إجازات الموظفين"
-                ]
+                phone: "0551111111",
+                skills: ["إجازات", "شؤون موظفين"],
+                tasks: ["إدارة إجازات الموظفين", "ملفات الموظفين"]
             },
             {
-                id: 4,
+                id: 3,
+                companyId: 1,
                 full_name: "أحمد الفيفي",
-                employee_code: "CSC-3001",
+                employee_code: "A-3001",
                 job_title: "Field Support Engineer",
                 branch_id: 2,
                 department_id: 3,
                 email: "ahmad@example.com",
-                phone: "0553333333",
+                phone: "0552222222",
                 skills: ["ميداني", "شبكات", "تركيب أجهزة"],
-                tasks: [
-                    "تركيب أجهزة الفروع",
-                    "حل المشاكل في المواقع الميدانية"
-                ]
+                tasks: ["زيارة المواقع", "تركيب أجهزة الفروع"]
             },
             {
-                id: 5,
+                id: 4,
+                companyId: 2,
                 full_name: "نوال الغامدي",
-                employee_code: "CSC-4001",
+                employee_code: "B-4001",
                 job_title: "Sales Executive",
-                branch_id: 2,
-                department_id: 4,
-                email: "nawal@example.com",
-                phone: "0554444444",
-                skills: ["مبيعات", "عروض أسعار", "عملاء رئيسيين"],
-                tasks: [
-                    "متابعة العملاء الرئيسيين",
-                    "إعداد عروض الأسعار"
-                ]
-            },
-            {
-                id: 6,
-                full_name: "خالد الحربي",
-                employee_code: "CSC-5001",
-                job_title: "Customer Service Agent",
                 branch_id: 3,
                 department_id: 5,
-                email: "khaled@example.com",
-                phone: "0555555555",
-                skills: ["خدمة عملاء", "حل مشاكل العملاء", "تصعيد الشكاوى"],
-                tasks: [
-                    "الرد على استفسارات العملاء",
-                    "تصعيد الشكاوى الحرجة"
-                ]
+                email: "nawal@example.com",
+                phone: "0553333333",
+                skills: ["مبيعات", "عملاء رئيسيين"],
+                tasks: ["متابعة العملاء", "إعداد عروض الأسعار"]
             }
         ];
 
-        function loadBranches() {
-            try {
-                const data = localStorage.getItem(BRANCHES_KEY);
-                return data ? JSON.parse(data) : DEFAULT_BRANCHES.slice();
-            } catch {
-                return DEFAULT_BRANCHES.slice();
-            }
-        }
-        function saveBranches() {
-            localStorage.setItem(BRANCHES_KEY, JSON.stringify(branches));
-        }
+        // ===== GLOBAL STATE =====
+        let companies = [];
+        let branches  = [];
+        let departments = [];
+        let employees = [];
+        let statusMap = {};
+        let currentSession = null; // { role, companyId?, displayName }
 
-        function loadDepartments() {
-            try {
-                const data = localStorage.getItem(DEPARTMENTS_KEY);
-                return data ? JSON.parse(data) : DEFAULT_DEPARTMENTS.slice();
-            } catch {
-                return DEFAULT_DEPARTMENTS.slice();
-            }
-        }
-        function saveDepartments() {
-            localStorage.setItem(DEPARTMENTS_KEY, JSON.stringify(departments));
-        }
-
-        function loadEmployees() {
-            try {
-                const data = localStorage.getItem(EMPLOYEES_KEY);
-                return data ? JSON.parse(data) : DEFAULT_EMPLOYEES.slice();
-            } catch {
-                return DEFAULT_EMPLOYEES.slice();
-            }
-        }
-        function saveEmployees() {
-            localStorage.setItem(EMPLOYEES_KEY, JSON.stringify(employees));
-        }
-
-        function loadStatusMap() {
-            try {
-                const data = localStorage.getItem(STATUS_KEY);
-                return data ? JSON.parse(data) : {};
-            } catch {
-                return {};
-            }
-        }
-        function saveStatusMap(map) {
-            localStorage.setItem(STATUS_KEY, JSON.stringify(map));
-        }
-
-        let branches = loadBranches();
-        let departments = loadDepartments();
-        let employees = loadEmployees();
-        let statusMap = loadStatusMap();
         let currentView = "BY_DEPT";
-        let editingEmployeeId = null;
 
-        const BRANCH_SELECT = document.getElementById("branchSelect");
-        const DEPT_SELECT = document.getElementById("departmentSelect");
-        const EMP_CONTAINER = document.getElementById("employeesContainer");
-        const NO_EMP = document.getElementById("noEmployees");
-        const PAGE_TITLE = document.getElementById("pageTitle");
-        const SEARCH_INPUT = document.getElementById("searchInput");
-        const STATUS_FILTER = document.getElementById("statusFilter");
-        const SKILL_FILTER = document.getElementById("skillFilter");
-        const VIEW_BY_DEPT_BTN = document.getElementById("viewByDeptBtn");
-        const VIEW_ON_DUTY_BTN = document.getElementById("viewOnDutyBtn");
+        // ===== LOAD / SAVE =====
+        function loadJSON(key, fallback) {
+            try {
+                const raw = localStorage.getItem(key);
+                if (!raw) return fallback;
+                return JSON.parse(raw);
+            } catch {
+                return fallback;
+            }
+        }
+        function saveJSON(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
 
-        const TOGGLE_ADD_FORM_BTN = document.getElementById("toggleAddFormBtn");
-        const ADD_FORM = document.getElementById("addEmployeeForm");
-        const ADD_BRANCH_SELECT = document.getElementById("addBranchSelect");
-        const ADD_DEPT_SELECT = document.getElementById("addDepartmentSelect");
-        const ADD_NAME = document.getElementById("addName");
-        const ADD_CODE = document.getElementById("addCode");
-        const ADD_JOB = document.getElementById("addJobTitle");
-        const ADD_EMAIL = document.getElementById("addEmail");
-        const ADD_PHONE = document.getElementById("addPhone");
-        const ADD_SKILLS = document.getElementById("addSkills");
-        const ADD_TASKS = document.getElementById("addTasks");
-        const ADD_EMP_BTN = document.getElementById("addEmployeeBtn");
+        function loadAllData() {
+            companies   = loadJSON(K_COMPANIES, DEFAULT_COMPANIES.slice());
+            branches    = loadJSON(K_BRANCHES,  DEFAULT_BRANCHES.slice());
+            departments = loadJSON(K_DEPTS,     DEFAULT_DEPARTMENTS.slice());
+            employees   = loadJSON(K_EMPS,      DEFAULT_EMPLOYEES.slice());
+            statusMap   = loadJSON(K_STATUS,    {});
+            currentSession = loadJSON(K_SESSION, null);
+        }
 
-        const ADD_BRANCH_NAME = document.getElementById("addBranchName");
-        const ADD_BRANCH_BTN = document.getElementById("addBranchBtn");
-        const ADD_DEPT_BRANCH_SELECT = document.getElementById("addDeptBranchSelect");
-        const ADD_DEPT_NAME = document.getElementById("addDeptName");
-        const ADD_DEPT_BTN = document.getElementById("addDeptBtn");
+        function saveCompanies()  { saveJSON(K_COMPANIES, companies); }
+        function saveBranches()   { saveJSON(K_BRANCHES, branches); }
+        function saveDepts()      { saveJSON(K_DEPTS, departments); }
+        function saveEmployees()  { saveJSON(K_EMPS, employees); }
+        function saveStatus()     { saveJSON(K_STATUS, statusMap); }
+        function saveSession()    { saveJSON(K_SESSION, currentSession); }
 
-        const MODAL = document.getElementById("employeeModal");
-        const MODAL_NAME = document.getElementById("modalName");
-        const MODAL_JOB = document.getElementById("modalJob");
-        const MODAL_BRANCH_DEPT = document.getElementById("modalBranchDept");
-        const MODAL_STATUS = document.getElementById("modalStatus");
-        const MODAL_CONTACT = document.getElementById("modalContact");
-        const MODAL_SKILLS = document.getElementById("modalSkills");
-        const MODAL_TASKS = document.getElementById("modalTasks");
-        const MODAL_CLOSE_BTN = document.getElementById("modalCloseBtn");
+        // ===== HELPERS =====
+        function nextIdFrom(arr) {
+            if (!arr.length) return 1;
+            return Math.max(...arr.map(x => x.id || 0)) + 1;
+        }
 
-        const EDIT_MODAL = document.getElementById("editEmployeeModal");
-        const EDIT_MODAL_CLOSE_BTN = document.getElementById("editModalCloseBtn");
-        const EDIT_NAME = document.getElementById("editName");
-        const EDIT_CODE = document.getElementById("editCode");
-        const EDIT_JOB = document.getElementById("editJobTitle");
-        const EDIT_BRANCH_SELECT = document.getElementById("editBranchSelect");
-        const EDIT_DEPT_SELECT = document.getElementById("editDeptSelect");
-        const EDIT_EMAIL = document.getElementById("editEmail");
-        const EDIT_PHONE = document.getElementById("editPhone");
-        const EDIT_SKILLS = document.getElementById("editSkills");
-        const EDIT_TASKS = document.getElementById("editTasks");
-        const SAVE_EMP_CHANGES_BTN = document.getElementById("saveEmployeeChangesBtn");
+        function getActiveCompanyId() {
+            if (!currentSession) return null;
+            if (currentSession.role === "SUPER") {
+                const sel = document.getElementById("appCompanySelect");
+                if (!sel || !sel.value) return null;
+                return parseInt(sel.value, 10);
+            }
+            return currentSession.companyId || null;
+        }
 
-        function initSelectors() {
-            refreshBranchSelects();
+        function toStatusLabel(code) {
+            switch (code) {
+                case "ON_DUTY": return "مداوم الآن";
+                case "VACATION": return "إجازة";
+                case "OUT": return "خارج المكتب";
+                case "REMOTE": return "عمل عن بُعد";
+                default: return code;
+            }
+        }
+
+        // ===== LOGIN LOGIC =====
+        const loginView = document.getElementById("loginView");
+        const appView   = document.getElementById("appView");
+
+        const loginRoleSelect    = document.getElementById("loginRole");
+        const loginCompanyGroup  = document.getElementById("loginCompanyGroup");
+        const loginCompanySelect = document.getElementById("loginCompany");
+        const loginCompanyAlert  = document.getElementById("loginCompanyAlert");
+        const loginNameInput     = document.getElementById("loginName");
+        const loginBtn           = document.getElementById("loginBtn");
+
+        function initLoginUI() {
+            // fill companies
+            refreshLoginCompanies();
+
+            loginRoleSelect.addEventListener("change", () => {
+                const role = loginRoleSelect.value;
+                if (role === "SUPER") {
+                    loginCompanyGroup.style.display = "none";
+                } else {
+                    loginCompanyGroup.style.display = "block";
+                    refreshLoginCompanies();
+                }
+            });
+
+            loginBtn.addEventListener("click", onLoginSubmit);
+        }
+
+        function refreshLoginCompanies() {
+            const role = loginRoleSelect.value;
+            loginCompanySelect.innerHTML = "";
+            if (role === "SUPER") {
+                loginCompanyGroup.style.display = "none";
+                loginCompanyAlert.style.display = "none";
+                return;
+            }
+            loginCompanyGroup.style.display = "block";
+
+            if (!companies.length) {
+                loginCompanyAlert.style.display = "block";
+                return;
+            } else {
+                loginCompanyAlert.style.display = "none";
+            }
+            companies.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c.id;
+                opt.textContent = c.name;
+                loginCompanySelect.appendChild(opt);
+            });
+        }
+
+        function onLoginSubmit() {
+            const role = loginRoleSelect.value;
+            const name = (loginNameInput.value || "").trim();
+
+            if (!name) {
+                alert("الرجاء كتابة اسمك.");
+                return;
+            }
+
+            if (role !== "SUPER") {
+                if (!companies.length) {
+                    alert("لا توجد شركات. استخدم Super Admin لإضافة شركة جديدة.");
+                    return;
+                }
+                if (!loginCompanySelect.value) {
+                    alert("الرجاء اختيار شركة.");
+                    return;
+                }
+            }
+
+            const session = {
+                role,
+                displayName: name
+            };
+
+            if (role !== "SUPER") {
+                session.companyId = parseInt(loginCompanySelect.value, 10);
+            }
+
+            currentSession = session;
+            saveSession();
+
+            enterApp();
+        }
+
+        function enterApp() {
+            loginView.style.display = "none";
+            appView.style.display = "block";
+            initAppForSession();
+        }
+
+        // ===== APP UI =====
+        const roleTag      = document.getElementById("roleTag");
+        const userNameLabel= document.getElementById("userNameLabel");
+        const logoutBtn    = document.getElementById("logoutBtn");
+
+        const companySwitcherContainer = document.getElementById("companySwitcherContainer");
+        const appCompanySelect         = document.getElementById("appCompanySelect");
+        const noCompanyNotice          = document.getElementById("noCompanyNotice");
+
+        const adminPanels     = document.getElementById("adminPanels");
+        const superPanel      = document.getElementById("superPanel");
+        const companyAdminPanel = document.getElementById("companyAdminPanel");
+
+        const branchSelect    = document.getElementById("branchSelect");
+        const deptSelect      = document.getElementById("departmentSelect");
+        const pageSubtitle    = document.getElementById("pageSubtitle");
+
+        const viewByDeptBtn   = document.getElementById("viewByDeptBtn");
+        const viewOnDutyBtn   = document.getElementById("viewOnDutyBtn");
+        const searchInput     = document.getElementById("searchInput");
+        const statusFilter    = document.getElementById("statusFilter");
+        const skillFilter     = document.getElementById("skillFilter");
+
+        const statsBar        = document.getElementById("statsBar");
+        const employeesContainer = document.getElementById("employeesContainer");
+        const noEmployees     = document.getElementById("noEmployees");
+
+        // admin inputs
+        const newCompanyName  = document.getElementById("newCompanyName");
+        const newCompanyCode  = document.getElementById("newCompanyCode");
+        const addCompanyBtn   = document.getElementById("addCompanyBtn");
+
+        const addBranchName   = document.getElementById("addBranchName");
+        const addBranchBtn    = document.getElementById("addBranchBtn");
+        const addDeptBranchSelect = document.getElementById("addDeptBranchSelect");
+        const addDeptName     = document.getElementById("addDeptName");
+        const addDeptBtn      = document.getElementById("addDeptBtn");
+
+        const addEmpName      = document.getElementById("addEmpName");
+        const addEmpCode      = document.getElementById("addEmpCode");
+        const addEmpJob       = document.getElementById("addEmpJob");
+        const addEmpBranchSelect = document.getElementById("addEmpBranchSelect");
+        const addEmpDeptSelect   = document.getElementById("addEmpDeptSelect");
+        const addEmpEmail     = document.getElementById("addEmpEmail");
+        const addEmpPhone     = document.getElementById("addEmpPhone");
+        const addEmpSkills    = document.getElementById("addEmpSkills");
+        const addEmpTasks     = document.getElementById("addEmpTasks");
+        const addEmpBtn       = document.getElementById("addEmpBtn");
+
+        function initAppForSession() {
+            if (!currentSession) {
+                // fallback
+                appView.style.display = "none";
+                loginView.style.display = "flex";
+                return;
+            }
+
+            // top bar user info
+            userNameLabel.textContent = currentSession.displayName;
+
+            let roleText = "";
+            switch (currentSession.role) {
+                case "SUPER": roleText = "Super Admin"; break;
+                case "COMPANY_ADMIN": roleText = "Company Admin"; break;
+                case "DEPT_MANAGER": roleText = "Department Manager"; break;
+                case "EMPLOYEE": roleText = "Employee"; break;
+            }
+            roleTag.textContent = roleText;
+
+            logoutBtn.addEventListener("click", () => {
+                currentSession = null;
+                saveSession();
+                appView.style.display = "none";
+                loginView.style.display = "flex";
+            });
+
+            // company switcher (for Super only)
+            if (currentSession.role === "SUPER") {
+                companySwitcherContainer.style.display = "flex";
+                refreshAppCompanySelect();
+                appCompanySelect.addEventListener("change", () => {
+                    refreshBranchAndDeptSelectors();
+                    refreshSkillFilterOptions();
+                    renderEmployees();
+                });
+            } else {
+                companySwitcherContainer.style.display = "none";
+            }
+
+            // admin panels visibility
+            adminPanels.style.display = "none";
+            superPanel.style.display = "none";
+            companyAdminPanel.style.display = "none";
+            noCompanyNotice.style.display = "none";
+
+            if (!companies.length) {
+                if (currentSession.role === "SUPER") {
+                    adminPanels.style.display = "block";
+                    superPanel.style.display = "block";
+                    noCompanyNotice.style.display = "block";
+                }
+            } else {
+                if (currentSession.role === "SUPER") {
+                    adminPanels.style.display = "block";
+                    superPanel.style.display = "block";
+                    companyAdminPanel.style.display = "block";
+                } else if (currentSession.role === "COMPANY_ADMIN") {
+                    adminPanels.style.display = "block";
+                    companyAdminPanel.style.display = "block";
+                }
+            }
+
+            // admin events
+            addCompanyBtn.addEventListener("click", onAddCompany);
+            addBranchBtn.addEventListener("click", onAddBranch);
+            addDeptBtn.addEventListener("click", onAddDept);
+            addEmpBtn.addEventListener("click", onAddEmployee);
+
+            // view / filter events
+            viewByDeptBtn.addEventListener("click", () => {
+                currentView = "BY_DEPT";
+                viewByDeptBtn.classList.add("active");
+                viewOnDutyBtn.classList.remove("active");
+                renderEmployees();
+            });
+            viewOnDutyBtn.addEventListener("click", () => {
+                currentView = "ON_DUTY";
+                viewOnDutyBtn.classList.add("active");
+                viewByDeptBtn.classList.remove("active");
+                statusFilter.value = "ALL";
+                renderEmployees();
+            });
+
+            searchInput.addEventListener("input", renderEmployees);
+            statusFilter.addEventListener("change", renderEmployees);
+            skillFilter.addEventListener("change", renderEmployees);
+
+            branchSelect.addEventListener("change", () => {
+                fillDeptSelect();
+                renderEmployees();
+            });
+            deptSelect.addEventListener("change", renderEmployees);
+
+            // initial selectors
+            refreshBranchAndDeptSelectors();
             refreshSkillFilterOptions();
 
-            BRANCH_SELECT.addEventListener("change", () => {
-                fillDepartments();
-                renderEmployees();
-            });
-
-            DEPT_SELECT.addEventListener("change", () => {
-                renderEmployees();
-            });
-
-            SEARCH_INPUT.addEventListener("input", () => {
-                renderEmployees();
-            });
-
-            STATUS_FILTER.addEventListener("change", () => {
-                renderEmployees();
-            });
-
-            SKILL_FILTER.addEventListener("change", () => {
-                renderEmployees();
-            });
-
-            VIEW_BY_DEPT_BTN.addEventListener("click", () => {
-                currentView = "BY_DEPT";
-                VIEW_BY_DEPT_BTN.classList.add("active");
-                VIEW_ON_DUTY_BTN.classList.remove("active");
-                renderEmployees();
-            });
-
-            VIEW_ON_DUTY_BTN.addEventListener("click", () => {
-                currentView = "ON_DUTY";
-                VIEW_ON_DUTY_BTN.classList.add("active");
-                VIEW_BY_DEPT_BTN.classList.remove("active");
-                STATUS_FILTER.value = "ALL";
-                renderEmployees();
-            });
-
-            TOGGLE_ADD_FORM_BTN.addEventListener("click", () => {
-                const visible = ADD_FORM.style.display === "block";
-                ADD_FORM.style.display = visible ? "none" : "block";
-                TOGGLE_ADD_FORM_BTN.textContent = visible ? "إضافة موظف جديد" : "إخفاء نموذج الإضافة";
-            });
-
-            ADD_BRANCH_SELECT.addEventListener("change", () => {
-                fillAddDepartments();
-            });
-
-            ADD_EMP_BTN.addEventListener("click", addNewEmployee);
-
-            ADD_BRANCH_BTN.addEventListener("click", addNewBranch);
-            ADD_DEPT_BTN.addEventListener("click", addNewDepartment);
-
-            MODAL_CLOSE_BTN.addEventListener("click", closeEmployeeProfile);
-            MODAL.addEventListener("click", (e) => {
-                if (e.target === MODAL) closeEmployeeProfile();
-            });
-
-            EDIT_MODAL_CLOSE_BTN.addEventListener("click", closeEditEmployeeModal);
-            EDIT_MODAL.addEventListener("click", (e) => {
-                if (e.target === EDIT_MODAL) closeEditEmployeeModal();
-            });
-            EDIT_BRANCH_SELECT.addEventListener("change", () => {
-                fillEditDepartments();
-            });
-            SAVE_EMP_CHANGES_BTN.addEventListener("click", saveEmployeeChanges);
-
-            fillDepartments();
-            fillAddDepartments();
+            // render first time
+            renderEmployees();
+            updateStats();
         }
 
-        function refreshBranchSelects() {
-            BRANCH_SELECT.innerHTML = "";
-            branches.forEach(b => {
+        function refreshAppCompanySelect() {
+            appCompanySelect.innerHTML = "";
+            if (!companies.length) return;
+            companies.forEach(c => {
                 const opt = document.createElement("option");
-                opt.value = b.id;
-                opt.textContent = b.name;
-                BRANCH_SELECT.appendChild(opt);
+                opt.value = c.id;
+                opt.textContent = c.name;
+                appCompanySelect.appendChild(opt);
             });
 
-            ADD_BRANCH_SELECT.innerHTML = "";
-            branches.forEach(b => {
-                const opt = document.createElement("option");
-                opt.value = b.id;
-                opt.textContent = b.name;
-                ADD_BRANCH_SELECT.appendChild(opt);
+            // choose first company if none selected
+            const actId = getActiveCompanyId();
+            if (!actId && companies.length) {
+                appCompanySelect.value = companies[0].id;
+            } else if (actId) {
+                appCompanySelect.value = String(actId);
+            }
+        }
+
+        function refreshBranchAndDeptSelectors() {
+            const companyId = getActiveCompanyId();
+            branchSelect.innerHTML = "";
+            deptSelect.innerHTML   = "";
+            addDeptBranchSelect.innerHTML = "";
+            addEmpBranchSelect.innerHTML  = "";
+            addEmpDeptSelect.innerHTML    = "";
+
+            if (!companyId) return;
+
+            const filteredBranches = branches.filter(b => b.companyId === companyId);
+            filteredBranches.forEach(b => {
+                const opt1 = document.createElement("option");
+                opt1.value = b.id;
+                opt1.textContent = b.name;
+                branchSelect.appendChild(opt1);
+
+                const opt2 = document.createElement("option");
+                opt2.value = b.id;
+                opt2.textContent = b.name;
+                addDeptBranchSelect.appendChild(opt2);
+
+                const opt3 = document.createElement("option");
+                opt3.value = b.id;
+                opt3.textContent = b.name;
+                addEmpBranchSelect.appendChild(opt3);
             });
 
-            ADD_DEPT_BRANCH_SELECT.innerHTML = "";
-            branches.forEach(b => {
+            fillDeptSelect();
+            fillAddEmpDeptSelect();
+        }
+
+        function fillDeptSelect() {
+            const companyId = getActiveCompanyId();
+            deptSelect.innerHTML = "";
+            if (!companyId || !branchSelect.value) return;
+            const branchId = parseInt(branchSelect.value, 10);
+            const filtered = departments.filter(d => d.companyId === companyId && d.branchId === branchId);
+            filtered.forEach(d => {
                 const opt = document.createElement("option");
-                opt.value = b.id;
-                opt.textContent = b.name;
-                ADD_DEPT_BRANCH_SELECT.appendChild(opt);
+                opt.value = d.id;
+                opt.textContent = d.name;
+                deptSelect.appendChild(opt);
             });
 
-            EDIT_BRANCH_SELECT.innerHTML = "";
-            branches.forEach(b => {
+            updateSubtitle();
+        }
+
+        function fillAddEmpDeptSelect() {
+            const companyId = getActiveCompanyId();
+            addEmpDeptSelect.innerHTML = "";
+            if (!companyId || !addEmpBranchSelect.value) return;
+            const branchId = parseInt(addEmpBranchSelect.value, 10);
+            const filtered = departments.filter(d => d.companyId === companyId && d.branchId === branchId);
+            filtered.forEach(d => {
                 const opt = document.createElement("option");
-                opt.value = b.id;
-                opt.textContent = b.name;
-                EDIT_BRANCH_SELECT.appendChild(opt);
+                opt.value = d.id;
+                opt.textContent = d.name;
+                addEmpDeptSelect.appendChild(opt);
             });
         }
 
+        addEmpBranchSelect.addEventListener("change", fillAddEmpDeptSelect);
+
+        function updateSubtitle() {
+            const companyId = getActiveCompanyId();
+            const company = companies.find(c => c.id === companyId);
+            const branchId = parseInt(branchSelect.value || "0", 10);
+            const deptId   = parseInt(deptSelect.value   || "0", 10);
+            const branch = branches.find(b => b.id === branchId);
+            const dept   = departments.find(d => d.id === deptId);
+
+            let txt = "";
+            if (company) txt += company.name;
+            if (branch) txt += " / " + branch.name;
+            if (dept)   txt += " / " + dept.name;
+
+            pageSubtitle.textContent = txt || "عرض الموظفين حسب الشركة / الفرع / القسم";
+        }
+
+        // ===== ADMIN HANDLERS =====
+        function onAddCompany() {
+            const name = (newCompanyName.value || "").trim();
+            const code = (newCompanyCode.value || "").trim();
+            if (!name) {
+                alert("الرجاء كتابة اسم الشركة.");
+                return;
+            }
+            const newId = nextIdFrom(companies);
+            companies.push({ id: newId, name, code });
+            saveCompanies();
+            newCompanyName.value = "";
+            newCompanyCode.value = "";
+            alert("تم إضافة الشركة بنجاح ✅");
+
+            refreshLoginCompanies();
+            refreshAppCompanySelect();
+            refreshBranchAndDeptSelectors();
+            renderEmployees();
+        }
+
+        function onAddBranch() {
+            const companyId = getActiveCompanyId();
+            if (!companyId) {
+                alert("الرجاء اختيار شركة أولاً.");
+                return;
+            }
+            const name = (addBranchName.value || "").trim();
+            if (!name) {
+                alert("الرجاء كتابة اسم الفرع.");
+                return;
+            }
+            const newId = nextIdFrom(branches);
+            branches.push({ id: newId, companyId, name, city: "" });
+            saveBranches();
+            addBranchName.value = "";
+            alert("تم إضافة الفرع بنجاح ✅");
+
+            refreshBranchAndDeptSelectors();
+            renderEmployees();
+        }
+
+        function onAddDept() {
+            const companyId = getActiveCompanyId();
+            if (!companyId) {
+                alert("الرجاء اختيار شركة أولاً.");
+                return;
+            }
+            const branchId = parseInt(addDeptBranchSelect.value || "0", 10);
+            const name = (addDeptName.value || "").trim();
+            if (!branchId || !name) {
+                alert("الرجاء اختيار فرع وكتابة اسم القسم.");
+                return;
+            }
+            const newId = nextIdFrom(departments);
+            departments.push({ id: newId, companyId, branchId, name });
+            saveDepts();
+            addDeptName.value = "";
+            alert("تم إضافة القسم بنجاح ✅");
+
+            refreshBranchAndDeptSelectors();
+            renderEmployees();
+        }
+
+        function onAddEmployee() {
+            const companyId = getActiveCompanyId();
+            if (!companyId) {
+                alert("الرجاء اختيار شركة أولاً.");
+                return;
+            }
+            const full_name = (addEmpName.value || "").trim();
+            const employee_code = (addEmpCode.value || "").trim();
+            const job_title = (addEmpJob.value || "").trim();
+            const email = (addEmpEmail.value || "").trim();
+            const phone = (addEmpPhone.value || "").trim();
+            const branch_id = parseInt(addEmpBranchSelect.value || "0", 10);
+            const department_id = parseInt(addEmpDeptSelect.value || "0", 10);
+            const skills = (addEmpSkills.value || "").split("\n").map(s => s.trim()).filter(Boolean);
+            const tasks  = (addEmpTasks.value  || "").split("\n").map(t => t.trim()).filter(Boolean);
+
+            if (!full_name || !job_title || !branch_id || !department_id) {
+                alert("الاسم، المسمى، الفرع، القسم حقول مطلوبة.");
+                return;
+            }
+
+            const newId = nextIdFrom(employees);
+            employees.push({
+                id: newId,
+                companyId,
+                full_name,
+                employee_code,
+                job_title,
+                branch_id,
+                department_id,
+                email,
+                phone,
+                skills,
+                tasks
+            });
+            saveEmployees();
+
+            addEmpName.value = "";
+            addEmpCode.value = "";
+            addEmpJob.value = "";
+            addEmpEmail.value = "";
+            addEmpPhone.value = "";
+            addEmpSkills.value = "";
+            addEmpTasks.value = "";
+
+            alert("تم إضافة الموظف بنجاح ✅");
+            refreshSkillFilterOptions();
+            renderEmployees();
+        }
+
+        // ===== SKILLS FILTER =====
         function refreshSkillFilterOptions() {
-            const skillsSet = new Set();
-            employees.forEach(emp => {
-                (emp.skills || []).forEach(s => {
-                    if (s && s.trim()) skillsSet.add(s.trim());
+            const companyId = getActiveCompanyId();
+            skillFilter.innerHTML = "";
+            const optAll = document.createElement("option");
+            optAll.value = "ALL";
+            optAll.textContent = "كل المهارات";
+            skillFilter.appendChild(optAll);
+
+            if (!companyId) return;
+
+            const set = new Set();
+            employees
+                .filter(e => e.companyId === companyId)
+                .forEach(e => {
+                    (e.skills || []).forEach(s => {
+                        if (s && s.trim()) set.add(s.trim());
+                    });
                 });
-            });
 
-            SKILL_FILTER.innerHTML = "";
-            const allOpt = document.createElement("option");
-            allOpt.value = "ALL";
-            allOpt.textContent = "كل المهارات";
-            SKILL_FILTER.appendChild(allOpt);
-
-            Array.from(skillsSet).sort().forEach(skill => {
+            Array.from(set).sort().forEach(skill => {
                 const opt = document.createElement("option");
                 opt.value = skill;
                 opt.textContent = skill;
-                SKILL_FILTER.appendChild(opt);
+                skillFilter.appendChild(opt);
             });
         }
 
-        function fillDepartments() {
-            const branchId = parseInt(BRANCH_SELECT.value, 10);
-            const filtered = departments.filter(d => d.branch_id === branchId);
-            DEPT_SELECT.innerHTML = "";
-            filtered.forEach(d => {
-                const opt = document.createElement("option");
-                opt.value = d.id;
-                opt.textContent = d.name;
-                DEPT_SELECT.appendChild(opt);
-            });
-        }
-
-        function fillAddDepartments() {
-            const branchId = parseInt(ADD_BRANCH_SELECT.value, 10);
-            const filtered = departments.filter(d => d.branch_id === branchId);
-            ADD_DEPT_SELECT.innerHTML = "";
-            filtered.forEach(d => {
-                const opt = document.createElement("option");
-                opt.value = d.id;
-                opt.textContent = d.name;
-                ADD_DEPT_SELECT.appendChild(opt);
-            });
-        }
-
-        function fillEditDepartments() {
-            const branchId = parseInt(EDIT_BRANCH_SELECT.value, 10);
-            const filtered = departments.filter(d => d.branch_id === branchId);
-            EDIT_DEPT_SELECT.innerHTML = "";
-            filtered.forEach(d => {
-                const opt = document.createElement("option");
-                opt.value = d.id;
-                opt.textContent = d.name;
-                EDIT_DEPT_SELECT.appendChild(opt);
-            });
-        }
-
+        // ===== RENDER EMPLOYEES =====
         function renderEmployees() {
-            const branchId = parseInt(BRANCH_SELECT.value, 10);
-            const deptId = parseInt(DEPT_SELECT.value, 10);
-            const searchText = (SEARCH_INPUT.value || "").toLowerCase().trim();
-            const statusFilter = STATUS_FILTER.value;
-            const skillFilter = SKILL_FILTER.value;
+            const companyId = getActiveCompanyId();
+            employeesContainer.innerHTML = "";
+            noEmployees.style.display = "none";
 
-            let filtered = [];
+            if (!companyId) {
+                noEmployees.textContent = "الرجاء اختيار شركة أولاً.";
+                noEmployees.style.display = "block";
+                updateStats();
+                return;
+            }
+
+            let list = employees.filter(e => e.companyId === companyId);
+
+            const searchText = (searchInput.value || "").toLowerCase().trim();
+            const statusF = statusFilter.value;
+            const skillF  = skillFilter.value;
 
             if (currentView === "BY_DEPT") {
-                const branch = branches.find(b => b.id === branchId);
-                const dept = departments.find(d => d.id === deptId);
-                PAGE_TITLE.textContent = `الموظفون - ${branch?.name || ""} / ${dept?.name || ""}`;
-
-                filtered = employees.filter(e =>
-                    e.branch_id === branchId && e.department_id === deptId
-                );
-            } else {
-                PAGE_TITLE.textContent = "الموظفون المداومون الآن (كل الفروع)";
-                filtered = employees.filter(e => {
-                    const st = statusMap[e.id] || "ON_DUTY";
-                    return st === "ON_DUTY";
-                });
+                if (branchSelect.value && deptSelect.value) {
+                    const branchId = parseInt(branchSelect.value, 10);
+                    const deptId   = parseInt(deptSelect.value, 10);
+                    list = list.filter(e => e.branch_id === branchId && e.department_id === deptId);
+                }
+            } else if (currentView === "ON_DUTY") {
+                list = list.filter(e => (statusMap[e.id] || "ON_DUTY") === "ON_DUTY");
             }
 
             if (searchText) {
-                filtered = filtered.filter(e => {
+                list = list.filter(e => {
                     const haystack = (
                         (e.full_name || "") + " " +
                         (e.employee_code || "") + " " +
@@ -972,31 +1333,25 @@
                 });
             }
 
-            if (currentView === "BY_DEPT" && statusFilter !== "ALL") {
-                filtered = filtered.filter(e => {
-                    const st = statusMap[e.id] || "ON_DUTY";
-                    return st === statusFilter;
+            if (statusF !== "ALL" && currentView === "BY_DEPT") {
+                list = list.filter(e => (statusMap[e.id] || "ON_DUTY") === statusF);
+            }
+
+            if (skillF !== "ALL") {
+                list = list.filter(e => {
+                    const sk = (e.skills || []).map(s => (s || "").trim());
+                    return sk.includes(skillF);
                 });
             }
 
-            if (skillFilter !== "ALL") {
-                filtered = filtered.filter(e => {
-                    const skills = (e.skills || []).map(s => (s || "").trim());
-                    return skills.includes(skillFilter);
-                });
-            }
-
-            EMP_CONTAINER.innerHTML = "";
-
-            if (filtered.length === 0) {
-                NO_EMP.style.display = "block";
+            if (!list.length) {
+                noEmployees.textContent = "لا يوجد موظفون حسب الفلاتر الحالية.";
+                noEmployees.style.display = "block";
                 updateStats();
                 return;
-            } else {
-                NO_EMP.style.display = "none";
             }
 
-            filtered.forEach(emp => {
+            list.forEach(emp => {
                 const card = document.createElement("div");
                 card.className = "card";
 
@@ -1007,11 +1362,9 @@
                 const nameEl = document.createElement("div");
                 nameEl.className = "name";
                 nameEl.textContent = emp.full_name;
-
                 const jobEl = document.createElement("div");
                 jobEl.className = "job-title";
-                jobEl.textContent = emp.job_title;
-
+                jobEl.textContent = emp.job_title || "";
                 left.appendChild(nameEl);
                 left.appendChild(jobEl);
 
@@ -1019,27 +1372,26 @@
                 right.style.textAlign = "left";
 
                 const status = statusMap[emp.id] || "ON_DUTY";
-
                 const statusPill = document.createElement("span");
                 statusPill.className = "status-pill status-" + status;
                 statusPill.textContent = toStatusLabel(status);
 
                 const select = document.createElement("select");
                 select.className = "status-select";
-                ["ON_DUTY","VACATION","OUT","REMOTE"].forEach(s => {
+                ["ON_DUTY","VACATION","OUT","REMOTE"].forEach(code => {
                     const opt = document.createElement("option");
-                    opt.value = s;
-                    opt.textContent = toStatusLabel(s);
-                    if (s === status) opt.selected = true;
+                    opt.value = code;
+                    opt.textContent = toStatusLabel(code);
+                    if (code === status) opt.selected = true;
                     select.appendChild(opt);
                 });
 
                 select.addEventListener("change", () => {
-                    const newStatus = select.value;
-                    statusMap[emp.id] = newStatus;
-                    saveStatusMap(statusMap);
-                    statusPill.className = "status-pill status-" + newStatus;
-                    statusPill.textContent = toStatusLabel(newStatus);
+                    const newSt = select.value;
+                    statusMap[emp.id] = newSt;
+                    saveStatus();
+                    statusPill.className = "status-pill status-" + newSt;
+                    statusPill.textContent = toStatusLabel(newSt);
                     updateStats();
                     if (currentView === "ON_DUTY") {
                         renderEmployees();
@@ -1055,321 +1407,118 @@
 
                 const meta = document.createElement("div");
                 meta.className = "meta";
+
+                const branch = branches.find(b => b.id === emp.branch_id);
+                const dept   = departments.find(d => d.id === emp.department_id);
+
+                const emailHtml = emp.email
+                    ? `<a href="mailto:${emp.email}">${emp.email}</a>`
+                    : "-";
+                const phoneHtml = emp.phone
+                    ? `<a href="tel:${emp.phone}">${emp.phone}</a>`
+                    : "-";
+
                 meta.innerHTML = `
                     <span class="tag">رقم الموظف: ${emp.employee_code || "-"}</span>
-                    <span class="tag">فرع ID: ${emp.branch_id}</span>
-                    <span class="tag">قسم ID: ${emp.department_id}</span>
+                    <span class="tag">${branch ? branch.name : "فرع غير معروف"}</span>
+                    <span class="tag">${dept ? dept.name : "قسم غير معروف"}</span>
                     <br/>
-                    <span>📧 ${emp.email || "-"} - 📱 ${emp.phone || "-"}</span>
+                    <span>📧 ${emailHtml} &nbsp; | &nbsp; 📱 ${phoneHtml}</span>
                 `;
 
-                const tasksWrapper = document.createElement("div");
-                tasksWrapper.className = "tasks";
-                const tasksTitle = document.createElement("div");
-                tasksTitle.className = "tasks-title";
-                tasksTitle.textContent = "المهام الحالية:";
-                const ul = document.createElement("ul");
+                const tasksWrap = document.createElement("div");
+                tasksWrap.className = "tasks";
+                const tTitle = document.createElement("div");
+                tTitle.className = "tasks-title";
+                tTitle.textContent = "المهام:";
+                tasksWrap.appendChild(tTitle);
+                const tList = document.createElement("ul");
                 (emp.tasks || []).forEach(t => {
                     const li = document.createElement("li");
                     li.className = "task-item";
                     li.textContent = "• " + t;
-                    ul.appendChild(li);
+                    tList.appendChild(li);
                 });
-                tasksWrapper.appendChild(tasksTitle);
-                tasksWrapper.appendChild(ul);
+                tasksWrap.appendChild(tList);
 
-                const skillsWrapper = document.createElement("div");
-                skillsWrapper.className = "skills";
-                const skillsTitle = document.createElement("div");
-                skillsTitle.className = "skills-title";
-                skillsTitle.textContent = "يقدر يساعد في:";
-                skillsWrapper.appendChild(skillsTitle);
-
+                const skillsWrap = document.createElement("div");
+                skillsWrap.className = "skills";
+                const sTitle = document.createElement("div");
+                sTitle.className = "skills-title";
+                sTitle.textContent = "يقدر يساعد في:";
+                skillsWrap.appendChild(sTitle);
                 (emp.skills || []).forEach(s => {
-                    if (!s) return;
                     const tag = document.createElement("span");
                     tag.className = "skill-tag";
                     tag.textContent = s;
-                    skillsWrapper.appendChild(tag);
+                    skillsWrap.appendChild(tag);
                 });
-
-                const actionsRow = document.createElement("div");
-                const profileBtn = document.createElement("button");
-                profileBtn.className = "profile-btn";
-                profileBtn.textContent = "عرض الملف";
-                profileBtn.addEventListener("click", () => openEmployeeProfile(emp));
-
-                const editBtn = document.createElement("button");
-                editBtn.className = "edit-btn";
-                editBtn.textContent = "تعديل";
-                editBtn.addEventListener("click", () => openEditEmployeeModal(emp));
-
-                actionsRow.appendChild(profileBtn);
-                actionsRow.appendChild(editBtn);
 
                 card.appendChild(header);
                 card.appendChild(meta);
-                card.appendChild(tasksWrapper);
-                card.appendChild(skillsWrapper);
-                card.appendChild(actionsRow);
+                card.appendChild(tasksWrap);
+                card.appendChild(skillsWrap);
 
-                EMP_CONTAINER.appendChild(card);
+                employeesContainer.appendChild(card);
             });
 
             updateStats();
         }
 
         function updateStats() {
-            const statsBar = document.getElementById("statsBar");
-            if (!statsBar) return;
+            const companyId = getActiveCompanyId();
+            statsBar.innerHTML = "";
+            if (!companyId) return;
 
-            const total = employees.length;
-            let onDuty = 0;
-            let vacation = 0;
-            let out = 0;
-            let remote = 0;
+            const companyEmps = employees.filter(e => e.companyId === companyId);
+            const total = companyEmps.length;
+            let onDuty = 0, vacation = 0, out = 0, remote = 0;
 
-            employees.forEach(emp => {
+            companyEmps.forEach(emp => {
                 const st = statusMap[emp.id] || "ON_DUTY";
-                switch (st) {
-                    case "ON_DUTY": onDuty++; break;
-                    case "VACATION": vacation++; break;
-                    case "OUT": out++; break;
-                    case "REMOTE": remote++; break;
-                }
+                if (st === "ON_DUTY") onDuty++;
+                else if (st === "VACATION") vacation++;
+                else if (st === "OUT") out++;
+                else if (st === "REMOTE") remote++;
             });
 
-            statsBar.innerHTML = `
-                <div style="background:#ffffff;padding:8px 10px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
-                    👥 إجمالي الموظفين: <b>${total}</b>
-                </div>
-                <div style="background:#e0f5e9;padding:8px 10px;border-radius:6px;">
-                    ✅ مداوم الآن: <b>${onDuty}</b>
-                </div>
-                <div style="background:#fff3cd;padding:8px 10px;border-radius:6px;">
-                    🏖️ إجازة: <b>${vacation}</b>
-                </div>
-                <div style="background:#fde2e1;padding:8px 10px;border-radius:6px;">
-                    🚪 خارج المكتب: <b>${out}</b>
-                </div>
-                <div style="background:#e0ecff;padding:8px 10px;border-radius:6px;">
-                    🏠 عمل عن بُعد: <b>${remote}</b>
-                </div>
-            `;
+            const s1 = document.createElement("div");
+            s1.className = "stat-chip";
+            s1.textContent = "👥 إجمالي الموظفين: " + total;
+
+            const s2 = document.createElement("div");
+            s2.className = "stat-chip";
+            s2.textContent = "✅ مداوم الآن: " + onDuty;
+
+            const s3 = document.createElement("div");
+            s3.className = "stat-chip";
+            s3.textContent = "🏖️ إجازة: " + vacation;
+
+            const s4 = document.createElement("div");
+            s4.className = "stat-chip";
+            s4.textContent = "🚪 خارج المكتب: " + out;
+
+            const s5 = document.createElement("div");
+            s5.className = "stat-chip";
+            s5.textContent = "🏠 عمل عن بُعد: " + remote;
+
+            statsBar.appendChild(s1);
+            statsBar.appendChild(s2);
+            statsBar.appendChild(s3);
+            statsBar.appendChild(s4);
+            statsBar.appendChild(s5);
         }
 
-        function toStatusLabel(status) {
-            switch (status) {
-                case "ON_DUTY": return "مداوم الآن";
-                case "VACATION": return "إجازة";
-                case "OUT": return "خارج المكتب";
-                case "REMOTE": return "عمل عن بُعد";
-                default: return status;
-            }
+        // ===== INIT APP =====
+        loadAllData();
+        initLoginUI();
+
+        // لو تحب يرجع آخر جلسة تلقائي:
+        if (currentSession) {
+            loginView.style.display = "none";
+            appView.style.display = "block";
+            initAppForSession();
         }
-
-        function openEmployeeProfile(emp) {
-            const branch = branches.find(b => b.id === emp.branch_id);
-            const dept = departments.find(d => d.id === emp.department_id);
-            const status = statusMap[emp.id] || "ON_DUTY";
-
-            MODAL_NAME.textContent = emp.full_name;
-            MODAL_JOB.textContent = `${emp.job_title || ""} | رقم الموظف: ${emp.employee_code || "-"}`;
-            MODAL_BRANCH_DEPT.textContent =
-                `${branch ? branch.name : ""} - ${dept ? dept.name : ""}`;
-
-            MODAL_STATUS.textContent = toStatusLabel(status);
-            MODAL_STATUS.className = "status-pill status-" + status;
-
-            MODAL_CONTACT.textContent = `📧 ${emp.email || "-"} | 📱 ${emp.phone || "-"}`;
-
-            MODAL_SKILLS.innerHTML = "";
-            (emp.skills || []).forEach(s => {
-                if (!s) return;
-                const li = document.createElement("li");
-                li.className = "task-item";
-                li.textContent = "• " + s;
-                MODAL_SKILLS.appendChild(li);
-            });
-
-            MODAL_TASKS.innerHTML = "";
-            (emp.tasks || []).forEach(t => {
-                const li = document.createElement("li");
-                li.className = "task-item";
-                li.textContent = "• " + t;
-                MODAL_TASKS.appendChild(li);
-            });
-
-            MODAL.style.display = "flex";
-        }
-
-        function closeEmployeeProfile() {
-            MODAL.style.display = "none";
-        }
-
-        function addNewEmployee() {
-            const name = ADD_NAME.value.trim();
-            const code = ADD_CODE.value.trim();
-            const job = ADD_JOB.value.trim();
-            const branchId = parseInt(ADD_BRANCH_SELECT.value, 10);
-            const deptId = parseInt(ADD_DEPT_SELECT.value, 10);
-            const email = ADD_EMAIL.value.trim();
-            const phone = ADD_PHONE.value.trim();
-            const skillsRaw = ADD_SKILLS.value.split("\n").map(s => s.trim()).filter(Boolean);
-            const tasksRaw = ADD_TASKS.value.split("\n").map(t => t.trim()).filter(Boolean);
-
-            if (!name || !job || !branchId || !deptId) {
-                alert("الاسم، المسمى، الفرع، القسم حقول مطلوبة.");
-                return;
-            }
-
-            const newId = employees.length
-                ? Math.max(...employees.map(e => e.id || 0)) + 1
-                : 1;
-
-            const newEmp = {
-                id: newId,
-                full_name: name,
-                employee_code: code,
-                job_title: job,
-                branch_id: branchId,
-                department_id: deptId,
-                email,
-                phone,
-                skills: skillsRaw,
-                tasks: tasksRaw
-            };
-
-            employees.push(newEmp);
-            saveEmployees();
-            refreshSkillFilterOptions();
-
-            ADD_NAME.value = "";
-            ADD_CODE.value = "";
-            ADD_JOB.value = "";
-            ADD_EMAIL.value = "";
-            ADD_PHONE.value = "";
-            ADD_SKILLS.value = "";
-            ADD_TASKS.value = "";
-
-            alert("تم إضافة الموظف بنجاح ✅");
-            renderEmployees();
-        }
-
-        function addNewBranch() {
-            const name = ADD_BRANCH_NAME.value.trim();
-            if (!name) {
-                alert("الرجاء كتابة اسم الفرع.");
-                return;
-            }
-
-            const newId = branches.length
-                ? Math.max(...branches.map(b => b.id || 0)) + 1
-                : 1;
-
-            branches.push({ id: newId, name });
-            saveBranches();
-            refreshBranchSelects();
-            fillDepartments();
-            fillAddDepartments();
-
-            ADD_BRANCH_NAME.value = "";
-            alert("تم إضافة الفرع بنجاح ✅");
-        }
-
-        function addNewDepartment() {
-            const name = ADD_DEPT_NAME.value.trim();
-            const branchId = parseInt(ADD_DEPT_BRANCH_SELECT.value, 10);
-
-            if (!name || !branchId) {
-                alert("الرجاء اختيار الفرع وكتابة اسم القسم.");
-                return;
-            }
-
-            const newId = departments.length
-                ? Math.max(...departments.map(d => d.id || 0)) + 1
-                : 1;
-
-            departments.push({ id: newId, name, branch_id: branchId });
-            saveDepartments();
-
-            fillDepartments();
-            fillAddDepartments();
-            fillEditDepartments();
-
-            ADD_DEPT_NAME.value = "";
-            alert("تم إضافة القسم بنجاح ✅");
-        }
-
-        function openEditEmployeeModal(emp) {
-            editingEmployeeId = emp.id;
-
-            EDIT_NAME.value = emp.full_name || "";
-            EDIT_CODE.value = emp.employee_code || "";
-            EDIT_JOB.value = emp.job_title || "";
-            EDIT_EMAIL.value = emp.email || "";
-            EDIT_PHONE.value = emp.phone || "";
-            EDIT_BRANCH_SELECT.value = emp.branch_id;
-
-            fillEditDepartments();
-            EDIT_DEPT_SELECT.value = emp.department_id;
-
-            EDIT_SKILLS.value = (emp.skills || []).join("\n");
-            EDIT_TASKS.value = (emp.tasks || []).join("\n");
-
-            EDIT_MODAL.style.display = "flex";
-        }
-
-        function closeEditEmployeeModal() {
-            EDIT_MODAL.style.display = "none";
-            editingEmployeeId = null;
-        }
-
-        function saveEmployeeChanges() {
-            if (!editingEmployeeId) return;
-
-            const name = EDIT_NAME.value.trim();
-            const code = EDIT_CODE.value.trim();
-            const job = EDIT_JOB.value.trim();
-            const branchId = parseInt(EDIT_BRANCH_SELECT.value, 10);
-            const deptId = parseInt(EDIT_DEPT_SELECT.value, 10);
-            const email = EDIT_EMAIL.value.trim();
-            const phone = EDIT_PHONE.value.trim();
-            const skillsRaw = EDIT_SKILLS.value.split("\n").map(s => s.trim()).filter(Boolean);
-            const tasksRaw = EDIT_TASKS.value.split("\n").map(t => t.trim()).filter(Boolean);
-
-            if (!name || !job || !branchId || !deptId) {
-                alert("الاسم، المسمى، الفرع، القسم حقول مطلوبة.");
-                return;
-            }
-
-            const idx = employees.findIndex(e => e.id === editingEmployeeId);
-            if (idx === -1) {
-                alert("حصل خطأ: لم يتم العثور على الموظف.");
-                return;
-            }
-
-            employees[idx].full_name = name;
-            employees[idx].employee_code = code;
-            employees[idx].job_title = job;
-            employees[idx].branch_id = branchId;
-            employees[idx].department_id = deptId;
-            employees[idx].email = email;
-            employees[idx].phone = phone;
-            employees[idx].skills = skillsRaw;
-            employees[idx].tasks = tasksRaw;
-
-            saveEmployees();
-            refreshSkillFilterOptions();
-
-            alert("تم حفظ التعديلات بنجاح ✅");
-            closeEditEmployeeModal();
-            renderEmployees();
-        }
-
-        initSelectors();
-        renderEmployees();
-        updateStats();
     </script>
 </body>
 </html>
