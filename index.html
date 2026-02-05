@@ -55,6 +55,12 @@
   </style>
 </head>
 <body>
+<div id="loginScreen" class="card">
+  <h3>تسجيل الدخول</h3>
+  <input id="companyName" placeholder="اسم الشركة">
+  <input id="email" placeholder="البريد الإلكتروني">
+  <button onclick="login()">دخول</button>
+</div>
 <header>
   <h2>Employee Connect – Multi Company Demo</h2>
 </header>
@@ -1015,10 +1021,45 @@
   };
 </script>
 <script>
+function login() {
+  const companyName = document.getElementById("companyName").value.trim();
+  const email = document.getElementById("email").value.trim();
+  if (!companyName || !email) return alert("كمل البيانات");
+
+  let data = JSON.parse(localStorage.getItem("ec-data")) || { companies: [] };
+
+  let company = data.companies.find(c => c.name === companyName);
+
+  if (!company) {
+    company = {
+      id: "comp-" + Date.now(),
+      name: companyName,
+      adminEmail: email,
+      departments: [],
+      employees: []
+    };
+    data.companies.push(company);
+  }
+
+  let role = email === company.adminEmail ? "admin" : "employee";
+
+  data.session = {
+    companyId: company.id,
+    email,
+    role
+  };
+
+  localStorage.setItem("ec-data", JSON.stringify(data));
+  location.reload();
+}
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js')
     .then(() => console.log('Service Worker registered successfully'))
     .catch(err => console.error('Service Worker registration failed:', err));
+}
+const savedData = JSON.parse(localStorage.getItem("ec-data"));
+if (savedData?.session) {
+  document.getElementById("loginScreen")?.remove();
 }
 </script>
 </body>
